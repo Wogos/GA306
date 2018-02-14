@@ -1,6 +1,3 @@
-#Both python files achieve the desired effect. This is probably the "Correct" one.
-
-
 import maya.OpenMaya as om
 import maya.cmds as cmds
 import random, time
@@ -25,14 +22,6 @@ def create_body(length=2, width=1):
     # Create a plane that represents the car body.
     # Return the transform node name.
     body = cmds.polyPlane(w=length, h=width, name="body")
-    
-    
-    
-    #new code:
-    arPolyNoise(body[0], 0.2)
-    
-    
-    
     return body[0]
     
 def create_tires(body_length, body_width):
@@ -55,14 +44,6 @@ def create_tire(name, width, radius, tx, ty, tz):
     # Return the transform node name.
     tire = cmds.polyCylinder(h=width, r=radius, ax=(0,0,1), sc=True, name=name)
     cmds.setAttr("{0}.translate".format(tire[0]), tx, ty, tz)
-    
-    
-    #new code:
-    arPolyNoise(tire[0], 0.2)
-    
-    
-    
-    
     return tire[0]
     
 def assemble_car(name, body, tires):
@@ -76,8 +57,8 @@ def assemble_car(name, body, tires):
     return car_grp
     
 if __name__ == "__main__":
-    name = create_car("test_car")
-    print("Car created: {0}".format(name))
+    car = create_car("test_car")
+    print("Car created: {0}".format(car))
     
 
 
@@ -111,6 +92,27 @@ def arPolyNoise(geoObject, maxDisplacement):
         meshFn.updateSurface()
     except: raise
 
+
+all_geos=maya.cmds.ls(geometry=True)
+
+print(all_geos);
+
+# start the timer and add the noise
+timeStart = time.clock()
+# create a sphere and add noise
+#sphere = cmds.polySphere(radius=1, subdivisionsX=200, subdivisionsY=200)
+#arPolyNoise(sphere[0], 0.02)
+
+for this_geo in all_geos:
+    arPolyNoise(this_geo, 0.2)
+
+#obviously I could go in to where every shape is made in the car function and run it through the arPolyNoise function seperately but I don't really want to.
+
+
+    
+# stop the timer
+timeStop = time.clock()
+print('Execution time: %s seconds.'%(timeStop-timeStart))
 
 
 
