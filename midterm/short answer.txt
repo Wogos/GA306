@@ -1,0 +1,6 @@
+1. A “function”
+2. “default()”
+3. “*args” allows for an arbitrary amount of function parameters as a tuple while “**kwargs” allows for keyword arguments.
+4. “start”, “stop” and “step”
+5. “if”, “else”, “elif”
+6. “for”
