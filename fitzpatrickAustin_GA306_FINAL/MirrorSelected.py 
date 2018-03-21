@@ -1,0 +1,53 @@
+x='x'
+y='y'
+z='z'
+def MirrorSelected(axis_list='x'):
+    import maya.cmds as cmds;
+    
+   
+    
+    select_list = cmds.ls(selection=True);
+    for obj in select_list:
+        obj_m = cmds.duplicate(obj);
+        obj_c = obj;
+        
+        for obj in obj_m:
+            obj_m_id=obj_m
+            obj_m=obj
+        print("obj_c="+obj_c);
+        
+        maya.cmds.select(obj_m);
+        cmds.scale(-1)
+        maya.cmds.select(obj_c);
+
+        
+        symmetry_node = cmds.createNode('symmetryConstraint')
+        
+        if axis_list.count("z") >0:
+            cmds.connectAttr(symmetry_node+'.xChildAxis',symmetry_node+'.zAxis')
+            
+        if axis_list.count("y") >0:
+            cmds.connectAttr(symmetry_node+'.xChildAxis',symmetry_node+'.yAxis')
+            
+        if axis_list.count("x") < 1:
+            cmds.connectAttr(symmetry_node+'.yChildAxis',symmetry_node+'.xAxis')
+
+        cmds.connectAttr(obj_c+'.translate', symmetry_node+'.targetTranslate')
+        cmds.connectAttr(obj_c+'.rotate', symmetry_node+'.targetRotate')
+        cmds.connectAttr(obj_c+'.scale', symmetry_node+'.targetScale')
+        cmds.connectAttr(obj_c+'.parentMatrix[0]', symmetry_node+'.targetParentMatrix')
+        cmds.connectAttr(obj_c+'.worldMatrix[0]', symmetry_node+'.targetWorldMatrix')
+        cmds.connectAttr(obj_c+'.rotateOrder', symmetry_node+'.targetRotateOrder')
+        cmds.connectAttr(symmetry_node+'.constraintTranslate', obj_m+'.translate')
+        cmds.connectAttr(symmetry_node+'.constraintRotate', obj_m+'.rotate')
+        cmds.connectAttr(symmetry_node+'.constraintScale', obj_m+'.scale')
+        cmds.connectAttr(symmetry_node+'.constraintRotateOrder', obj_m+'.rotateOrder')
+        cmds.connectAttr(obj_m+'.parentInverseMatrix[0]', symmetry_node+'.constraintInverseParentWorldMatrix')
+        cmds.parent(symmetry_node+'', obj_m)
+        cmds.select(obj_c)
+
+
+//example executions:
+//MirrorSelected(x)
+//MirrorSelected("xz")
+//MirrorSelected(y+z)
